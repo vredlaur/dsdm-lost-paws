@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
@@ -13,13 +14,13 @@ import androidx.compose.material3.FilterChip
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.laurentiu.lostpaws.data.repository.PetRepository
 import com.laurentiu.lostpaws.ui.components.LostPawsTopBar
-import com.laurentiu.lostpaws.ui.viewmodel.PetFormState
 import com.laurentiu.lostpaws.ui.viewmodel.PetViewModel
 
 @Composable
@@ -38,6 +39,35 @@ fun AddPetScreen(
                 canNavigateBack = true,
                 onBackClick = onBackClick
             )
+        },
+        bottomBar = {
+            Surface(
+                color = MaterialTheme.colorScheme.background,
+                tonalElevation = 4.dp,
+                shadowElevation = 8.dp
+            ) {
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .navigationBarsPadding()
+                        .padding(16.dp),
+                    verticalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
+                    if (state.errorMessage != null) {
+                        Text(
+                            text = state.errorMessage,
+                            color = MaterialTheme.colorScheme.error,
+                            style = MaterialTheme.typography.bodySmall
+                        )
+                    }
+                    Button(
+                        onClick = { petViewModel.savePet(onSaved) },
+                        modifier = Modifier.fillMaxWidth()
+                    ) {
+                        Text("Salveaza anunt")
+                    }
+                }
+            }
         },
         containerColor = MaterialTheme.colorScheme.background
     ) { padding ->
@@ -100,18 +130,6 @@ fun AddPetScreen(
             }
             FormTextField("Recompensa (optional)", form.reward) { value ->
                 petViewModel.updateForm { copy(reward = value) }
-            }
-            if (state.errorMessage != null) {
-                Text(
-                    text = state.errorMessage,
-                    color = MaterialTheme.colorScheme.error
-                )
-            }
-            Button(
-                onClick = { petViewModel.savePet(onSaved) },
-                modifier = Modifier.fillMaxWidth()
-            ) {
-                Text("Salveaza anunt")
             }
         }
     }
