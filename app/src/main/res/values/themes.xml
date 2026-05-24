@@ -1,0 +1,8 @@
+<resources>
+    <style name="Theme.LostPaws" parent="android:style/Theme.Material.Light.NoActionBar">
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowActionBar">false</item>
+        <item name="android:windowBackground">@drawable/lost_paws_header_gradient</item>
+        <item name="android:fontFamily">sans</item>
+    </style>
+</resources>
