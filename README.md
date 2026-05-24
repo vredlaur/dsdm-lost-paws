@@ -10,6 +10,7 @@ LostPaws este o aplicatie Android pentru proiectul final DSDM, tema Social / Los
 - Lista scrollabila cu filtre pentru Toate, Pierdute si Gasite.
 - Cautare dupa nume, oras, zona, rasa, tip sau status.
 - Ecran de detalii cu imagine, descriere, contact, recompensa, favorit, rezolvat si stergere pentru owner.
+- Apel direct catre numarul de contact si distribuire anunt prin share sheet Android.
 - Adaugare anunt local cu validare.
 - Ecran cu imagini online incarcate prin doua request-uri HTTP: Dog CEO API si The Cat API.
 - Profil cu statistici locale si delogare.

@@ -1,5 +1,7 @@
 package com.laurentiu.lostpaws.ui.screens.details
 
+import android.content.Intent
+import android.net.Uri
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -14,6 +16,8 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.CheckCircle
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Favorite
+import androidx.compose.material.icons.filled.Phone
+import androidx.compose.material.icons.filled.Share
 import androidx.compose.material.icons.outlined.FavoriteBorder
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
@@ -28,6 +32,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.laurentiu.lostpaws.data.local.entity.PetEntity
@@ -92,6 +97,8 @@ private fun DetailsContent(
     onDeleteClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
+    val context = LocalContext.current
+
     Column(
         modifier = modifier
             .fillMaxSize()
@@ -134,6 +141,41 @@ private fun DetailsContent(
             }
         }
         InfoCard(pet)
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.spacedBy(10.dp)
+        ) {
+            Button(
+                onClick = {
+                    val intent = Intent(
+                        Intent.ACTION_DIAL,
+                        Uri.parse("tel:${Uri.encode(pet.contactPhone)}")
+                    )
+                    context.startActivity(intent)
+                },
+                enabled = pet.contactPhone.isNotBlank() && pet.contactPhone != "-",
+                modifier = Modifier.weight(1f)
+            ) {
+                Icon(Icons.Filled.Phone, contentDescription = null)
+                Text(" Apeleaza")
+            }
+            OutlinedButton(
+                onClick = {
+                    val sendIntent = Intent(Intent.ACTION_SEND).apply {
+                        type = "text/plain"
+                        putExtra(Intent.EXTRA_SUBJECT, "LostPaws - ${pet.name}")
+                        putExtra(Intent.EXTRA_TEXT, pet.toShareText())
+                    }
+                    context.startActivity(
+                        Intent.createChooser(sendIntent, "Distribuie anuntul")
+                    )
+                },
+                modifier = Modifier.weight(1f)
+            ) {
+                Icon(Icons.Filled.Share, contentDescription = null)
+                Text(" Distribuie")
+            }
+        }
         Button(
             onClick = onResolvedClick,
             enabled = !pet.isResolved,
@@ -176,6 +218,20 @@ private fun InfoCard(pet: PetEntity) {
             Text(pet.description)
         }
     }
+}
+
+private fun PetEntity.toShareText(): String {
+    val statusText = if (status == PetRepository.STATUS_LOST) "pierdut" else "gasit"
+    return buildString {
+        appendLine("LostPaws: $name este $statusText.")
+        appendLine("Tip: $type")
+        appendLine("Zona: $city, $area")
+        appendLine("Descriere: $description")
+        appendLine("Contact: $contactPhone")
+        if (reward.isNotBlank() && reward != "-") {
+            appendLine("Recompensa: $reward")
+        }
+    }.trim()
 }
 
 @Composable
