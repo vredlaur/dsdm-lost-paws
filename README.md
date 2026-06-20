@@ -90,4 +90,4 @@ Pe Windows:
 .\gradlew.bat build
 ```
 
-Proiectul foloseste Android SDK 36.1 si Android Gradle Plugin 8.13.2.
+Proiectul foloseste Android SDK 36.1, Android Gradle Plugin 9.2.1 si Gradle 9.4.1.
